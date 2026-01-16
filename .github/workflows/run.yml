@@ -1,6 +1,13 @@
 name: Telegram Deals Bot
 
 on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/30 * * * *"
+
+name: Telegram Deals Bot
+
+on:
   schedule:
     - cron: "*/30 * * * *"
   workflow_dispatch:
