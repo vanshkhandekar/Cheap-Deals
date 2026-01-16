@@ -70,4 +70,22 @@ def run_bot():
 
 if __name__ == "__main__":
     send_message(ADMIN_USER_ID, "✅ GitHub Deals Bot Started")
+    run_bot()🛒 {title}
+
+👉 Buy Now: {link}
+
+📢 Join @everycheapdeals
+"""
+
+def run_bot():
+    for source, url in RSS_FEEDS.items():
+        feed = feedparser.parse(url)
+        for entry in feed.entries[:3]:
+            msg = format_msg(source, entry.title, entry.link)
+            if not is_duplicate(msg):
+                send_message(CHANNEL_USERNAME, msg)
+                time.sleep(3)
+
+if __name__ == "__main__":
+    send_message(ADMIN_USER_ID, "✅ GitHub Deals Bot Started")
     run_bot()
