@@ -14,27 +14,45 @@ RSS_FEEDS = {
     "Meesho": "https://www.meesho.com/rss"
 }
 
-posted = set()
+posted_hashes = set()
 
 def send_message(chat_id, text):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-    requests.post(url, data={
+    payload = {
         "chat_id": chat_id,
         "text": text,
         "disable_web_page_preview": False
-    })
+    }
+    requests.post(url, data=payload)
 
 def is_duplicate(text):
-    h = hashlib.md5(text.encode()).hexdigest()
-    if h in posted:
+    h = hashlib.md5(text.encode("utf-8")).hexdigest()
+    if h in posted_hashes:
         return True
-    posted.add(h)
+    posted_hashes.add(h)
     return False
 
-def format_msg(source, title, link):
-    return f"""🔥 {source} DEAL ALERT
+def format_message(source, title, link):
+    message = (
+        f"🔥 {source} DEAL ALERT\n\n"
+        f"🛒 {title}\n\n"
+        f"👉 Buy Now: {link}\n\n"
+        f"📢 Join @everycheapdeals"
+    )
+    return message
 
-🛒 {title}
+def run_bot():
+    for source, feed_url in RSS_FEEDS.items():
+        feed = feedparser.parse(feed_url)
+        for entry in feed.entries[:3]:
+            msg = format_message(source, entry.title, entry.link)
+            if not is_duplicate(msg):
+                send_message(CHANNEL_USERNAME, msg)
+                time.sleep(3)
+
+if __name__ == "__main__":
+    send_message(ADMIN_USER_ID, "✅ GitHub Deals Bot Started")
+    run_bot()🛒 {title}
 
 👉 Buy Now: {link}
 
