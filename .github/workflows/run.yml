@@ -5,13 +5,6 @@ on:
   schedule:
     - cron: "*/30 * * * *"
 
-name: Telegram Deals Bot
-
-on:
-  schedule:
-    - cron: "*/30 * * * *"
-  workflow_dispatch:
-
 jobs:
   run-bot:
     runs-on: ubuntu-latest
@@ -35,4 +28,5 @@ jobs:
           CHANNEL_USERNAME: ${{ secrets.CHANNEL_USERNAME }}
           ADMIN_USER_ID: ${{ secrets.ADMIN_USER_ID }}
         run: |
+          python bot.py        run: |
           python bot.py
